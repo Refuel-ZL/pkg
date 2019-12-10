@@ -1,4 +1,4 @@
-module pkg
+module github.com/Refuel-ZL/pkg
 
 go 1.13
 
