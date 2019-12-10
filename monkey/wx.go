@@ -1,7 +1,6 @@
 package monkey
 
 import (
-	"cdnservices/internal/pkg/wx"
 	"encoding/json"
 	"fmt"
 	"github.com/valyala/fasthttp"
@@ -14,13 +13,18 @@ type MonkeyX struct {
 	Key string `json:"appkey"`
 }
 
+type Wxdomianresponse struct {
+	Status int8   `json:"status"` //0为正常，1为被转码，2为被封，3查询失败，-1接口到期
+	Domain string `json:"domain"`
+}
+
 type WxCheckDomainResponse struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Data string `json:"data"`
 }
 
-func (x *MonkeyX) Domain(domain string) (res wx.Wxdomianresponse, err error) {
+func (x *MonkeyX) Domain(domain string) (res Wxdomianresponse, err error) {
 	args := &fasthttp.Args{}
 	args.Add("url", domain)
 	args.Add("key", x.Key)

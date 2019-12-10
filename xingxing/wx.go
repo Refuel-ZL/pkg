@@ -1,7 +1,6 @@
 package xingxing
 
 import (
-	"cdnservices/internal/pkg/wx"
 	"encoding/json"
 	"fmt"
 	"github.com/valyala/fasthttp"
@@ -15,15 +14,12 @@ type XingX struct {
 	Key  string `json:"key"`
 }
 
-type WxCheckDomainResponse struct {
-	Status  int8   `json:"status"`
-	Domain  string `json:"domain"`
-	Errmsg  string `json:"errmsg"`
-	User    string `json:"user"`
-	Endtime string `json:"endtime"`
+type Wxdomianresponse struct {
+	Status int8   `json:"status"` //0为正常，1为被转码，2为被封，3查询失败，-1接口到期
+	Domain string `json:"domain"`
 }
 
-func (x *XingX) Domain(domain string) (res wx.Wxdomianresponse, err error) {
+func (x *XingX) Domain(domain string) (res Wxdomianresponse, err error) {
 	args := &fasthttp.Args{}
 	args.Add("user", x.User)
 	args.Add("domain", domain)
@@ -36,7 +32,13 @@ func (x *XingX) Domain(domain string) (res wx.Wxdomianresponse, err error) {
 	if code != http.StatusOK {
 		return res, fmt.Errorf("%v", resp)
 	}
-	var _res WxCheckDomainResponse
+	var _res struct {
+		Status  int8   `json:"status"`
+		Domain  string `json:"domain"`
+		Errmsg  string `json:"errmsg"`
+		User    string `json:"user"`
+		Endtime string `json:"endtime"`
+	}
 	err = json.Unmarshal(resp, &_res)
 	if err != nil {
 		return res, err
